@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-task-v0
+  namespace: hanjl
+spec:
+  selector:
+    k8s-task-server: v0
+  ports:
+    - name: task
+      port: 8002
+      targetPort: 8002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-task-server-v0
+  namespace: hanjl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-task-server: v0
+      k8s-ssh-task-server: v0
+  template:
+    metadata:
+      labels:
+        k8s-task-server: v0
+        k8s-ssh-task-server: v0
+    spec:
+      serviceAccountName: task-service-account
+      containers:
+      - name: k8s-task-server
+        image: docker.kt.io/rlg1/hanjl/going:v1
+        command: ["/bin/bash","-c"]
+        args:
+        - service ssh restart;while true;do sleep 10h;done
+        volumeMounts:
+        - mountPath: /data/hanjl
+          name: storage
+      volumes:
+      - name: storage
+        nfs:
+          server: 169.252.198.3
+          path: /NAS_DATA/NAS_DATA/hanjl
+      nodeName: by10

@@ -1,0 +1,18 @@
+apiVersion: "kubeflow.org/v1"
+kind: PyTorchJob
+metadata:
+  name: pytorch-simple
+  # namespace: kubeflow
+spec:
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        spec:
+          containers:
+            - name: pytorch
+              image: docker.kt.io/rlg1/hanjl/framework:latest
+              command: ["/bin/bash", "-c"]
+              args:
+              - sleep 1h
