@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-ssh-quota-v0
+spec:
+  allocateLoadBalancerNodePorts: false
+  type: LoadBalancer
+  # loadBalancerIP: 192.168.4.10
+  externalIPs:
+  - 192.168.4.10
+  selector:
+    k8s-ssh-quota-server: v0
+  ports:
+  - name: ssh
+    port: 20001
+    targetPort: 22

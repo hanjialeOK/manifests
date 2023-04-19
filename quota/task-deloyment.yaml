@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-quota-v0
+  namespace: lzm
+spec:
+  selector:
+    k8s-quota-server: v0
+  ports:
+    - name: quota
+      port: 8003
+      targetPort: 8003
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-quota-server-v0
+  namespace: lzm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-quota-server: v0
+      k8s-ssh-quota-server: v0
+  template:
+    metadata:
+      labels:
+        k8s-quota-server: v0
+        k8s-ssh-quota-server: v0
+    spec:
+      serviceAccountName: quota-service-account
+      containers:
+      - name: k8s-quota-server
+        image: docker.kt.io/rlg1/lzm/going:v1
+        command: ["/bin/bash","-c"]
+        args:
+        - service ssh restart;while true;do sleep 10h;done
+        volumeMounts:
+        - mountPath: /data/lzm
+          name: storage
+      volumes:
+      - name: storage
+        nfs:
+          server: 169.252.198.3
+          path: /NAS_DATA/NAS_DATA/lzm
+      nodeName: by10
