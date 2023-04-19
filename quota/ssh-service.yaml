@@ -12,5 +12,5 @@ spec:
     k8s-ssh-quota-server: v0
   ports:
   - name: ssh
-    port: 20001
+    port: 3366
     targetPort: 22

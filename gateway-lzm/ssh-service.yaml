@@ -12,5 +12,5 @@ spec:
     k8s-ssh-gateway-server: v0
   ports:
   - name: ssh
-    port: 20000
+    port: 3365
     targetPort: 22
