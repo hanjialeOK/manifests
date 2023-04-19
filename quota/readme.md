@@ -19,7 +19,7 @@ kubectl apply -f gateway-deployment.yaml
 kubectl apply -f ssh-service.yaml
 // quota
 cd /manifests/quota
-// 声明权限
+// 赋予quota模块管理员权限
 kubectl apply -f role-bind.yaml
 // 部署quota服务
 kubectl apply -f quota-deloyment.yaml
@@ -47,6 +47,22 @@ deployment.apps/k8s-quota-server-v0     1/1     1            1           14s
 NAME                                               DESIRED   CURRENT   READY   AGE
 replicaset.apps/k8s-gateway-server-v0-68db9dd68d   1         1         1       110s
 replicaset.apps/k8s-quota-server-v0-7b5fd846f6     1         1         1       14s
+```
+
+如果将查看pod/service/deployment/replicaset详情。使用describe
+
+```c
+kubectl describe pod/k8s-quota-server-v0-7b5fd846f6-8xjfm
+kubectl describe service/svc-gateway-v0 
+kubectl describe deployment.apps/k8s-gateway-server-v0
+```
+
+如果想删除pod/service/deployment/replicaset，使用delete
+
+```c
+kubectl delete pod/k8s-quota-server-v0-7b5fd846f6-8xjfm
+kubectl delete service/svc-gateway-v0 
+kubectl delete deployment.apps/k8s-gateway-server-v0
 ```
 
 ## 开发
