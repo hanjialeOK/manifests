@@ -49,7 +49,14 @@ replicaset.apps/k8s-gateway-server-v0-68db9dd68d   1         1         1       1
 replicaset.apps/k8s-quota-server-v0-7b5fd846f6     1         1         1       14s
 ```
 
-如果将查看pod/service/deployment/replicaset详情。使用describe
+如果想进入pod，使用exec
+
+```c
+kubectl exec -it pod/k8s-gateway-server-v0-68db9dd68d-kzcjj -- /bin/zsh
+kubectl exec -it pod/k8s-quota-server-v0-7b5fd846f6-8xjfm -- /bin/zsh
+```
+
+如果将查看pod/service/deployment/replicaset详情，使用describe
 
 ```c
 kubectl describe pod/k8s-quota-server-v0-7b5fd846f6-8xjfm
@@ -67,18 +74,76 @@ kubectl delete deployment.apps/k8s-gateway-server-v0
 
 ## 开发
 
-登录gateway和quota后端
+这两个容器里都已经安装了go环境，以及zsh和tmux（可以熟悉一下这两个工具，非常有用，尤其是tmux）
+
+ssh登录进容器和`kube exec`进容器的区别是，前者缺少很多环境变量。你首先要`kube exec`进入容器把环境变量保存到`~/.env`文件，并且打开一个tmux窗口（tmux可以保留环境变量）
+
+```c
+// gateway不要环境变量，只需进入quota模块
+kubectl exec -it pod/k8s-quota-server-v0-7b5fd846f6-8xjfm
+printenv > ~/.env
+// tmux可以保留环境变量，ctrl+b+d可以脱离该窗口
+tmux new -s dev_by10
+```
+
+修改.vscode/launch.json，方便使用vscode debug。之后你应该加上quota相关内容。
+
+```c
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${fileDirname}",
+            "envFile": "/root/.env",
+            "env": {
+                "GATEWAY_PORT":"8000", 
+                "USER_SERVICE":"svc-user-v0.shuwd:8001", 
+                "USER_PORT":"8001", 
+                "TASK_SERVICE":"svc-task-v0:8002", 
+                "TASK_PORT": "8002",
+            }
+        }
+    ]
+}
+```
+
+ssh登录gateway和quota后端
 
 ```c
 // 登录gateway
 ssh root@192.168.4.10 -p 20000
 // 登录quota后端
 ssh root@192.168.4.10 -p 20001
+// 进入tmux窗口，里面应该是有k8s环境变量的
+tmux attach -t dev_by10
+printenv
 ```
 
-这两个容器里都已经安装了go环境，以及zsh和tmux（可以熟悉一下这两个工具，非常有用，尤其是tmux）。此外，这两个容器挂在了公共存储盘，路径是/data/lzm。建议你在此路径下进行代码开发，这样可以保证两个容器里代码一致性。
+这两个容器挂在了公共存储盘，路径是/data/lzm。建议你在此路径下进行代码开发，这样可以保证两个容器里代码一致性。容器的.ssh里面配置了你的公钥和私钥。git clone时使用ssh链接，不要用https。
 
-git clone时使用ssh链接，不要用https。代码下载后，在vscode上把go拓展安装好，然后`ctrl+shift+p`，输入go，选择go install，把所有的包全选并安装。
+```c
+cd /data/lzm
+git clone git@github.com:USTC-MCCLab/aiarena-backend.git
+```
+
+代码下载后，在vscode上把remote-ssh拓展安装好，配置一下。然后把go拓展安装好，然后`ctrl+shift+p`，输入go，选择go install，把显示的几个的包全选并安装。
+
+修改一下`aiarena-backend/services/gateway/script`脚本，之后要加上你自己的quota
+
+```c
+export GATEWAY_PORT=8000
+export USER_SERVICE=svc-user-v0.shuwd:8001
+export TASK_SERVICE=svc-task-v0.hanjl:8002
+cd ..
+go run .
+```
 
 执行如下命令，开启服务
 
@@ -89,15 +154,16 @@ go mod tidy
 // 开启gateway
 cd aiarena-backend/services/gateway/script
 sh start.sh
-// 开启user服务
+// 如果想开启user服务
 cd aiarena-backend/services/user/script
 sh start.sh
-// 开启task服务
+// 如果想开启task服务
 cd aiarena-backend/services/task/script
-sh start.sh
-// 开启quota服务
-cd aiarena-backend/services/quota/script
 sh start.sh
 ```
 
 你的gateway入口是192.168.4.10:10003，该地址加上/api/v1...等后缀即可使用postman访问。
+
+## 提交pr
+
+理想情况下，你应该只改动`aiarena-backend/services/quota/`路径下的代码。其他文件夹下的代码可能也需要改动，为了让程序跑起来。go.mod和go.sum的改动不要commit，所有脚本文件的改动不要commit，暂时先只对`aiarena-backend/services/quota/`路径下的代码commit。
