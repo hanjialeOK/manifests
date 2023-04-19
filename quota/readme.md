@@ -127,7 +127,7 @@ git clone git@github.com:USTC-MCCLab/aiarena-backend.git
                 "GATEWAY_PORT":"8000", 
                 "USER_SERVICE":"svc-user-v0.shuwd:8001", 
                 "USER_PORT":"8001", 
-                "TASK_SERVICE":"svc-task-v0:8002", 
+                "TASK_SERVICE":"svc-task-v0.hanjl:8002", 
                 "TASK_PORT": "8002",
             }
         }
