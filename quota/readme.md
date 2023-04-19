@@ -8,17 +8,17 @@
 kubectl get all
 ```
 
-你的命名空间下此时没有任何资源。需要你手动部署服务
+你的命名空间下此时没有任何资源。把这个库下载到4.10上（使用ssh链接，https没速度），需要你手动部署服务。
 
 ```c
 // gateway
-cd /manifests/gateway-lzm
+cd manifests/gateway-lzm
 // 部署gateway服务
 kubectl apply -f gateway-deployment.yaml
 // ssh服务，方便你可以登录该容器进行开发
 kubectl apply -f ssh-service.yaml
 // quota
-cd /manifests/quota
+cd manifests/quota
 // 赋予quota模块管理员权限
 kubectl apply -f role-bind.yaml
 // 部署quota服务
