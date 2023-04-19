@@ -86,7 +86,28 @@ printenv > ~/.env
 tmux new -s dev_by10
 ```
 
-修改.vscode/launch.json，方便使用vscode debug。之后你应该加上quota相关内容。
+ssh登录gateway和quota后端
+
+```c
+// 登录gateway
+ssh root@192.168.4.10 -p 20000
+// 登录quota后端
+ssh root@192.168.4.10 -p 20001
+// 进入tmux窗口，里面应该是有k8s环境变量的
+tmux attach -t dev_by10
+printenv
+```
+
+这两个容器挂在了公共存储盘，路径是/data/lzm。建议你在此路径下进行代码开发，这样可以保证两个容器里代码一致性。容器的.ssh里面配置了你的公钥和私钥。git clone时使用ssh链接，不要用https。
+
+```c
+cd /data/lzm
+git clone git@github.com:USTC-MCCLab/aiarena-backend.git
+```
+
+代码下载后，在vscode上把remote-ssh拓展安装好，配置一下。然后把go拓展安装好，然后`ctrl+shift+p`，输入go，选择go install，把显示的几个的包全选并安装。
+
+修改`aiarena-backend/.vscode/launch.json`，方便使用vscode debug。之后你应该加上quota相关内容。
 
 ```c
 {
@@ -113,27 +134,6 @@ tmux new -s dev_by10
     ]
 }
 ```
-
-ssh登录gateway和quota后端
-
-```c
-// 登录gateway
-ssh root@192.168.4.10 -p 20000
-// 登录quota后端
-ssh root@192.168.4.10 -p 20001
-// 进入tmux窗口，里面应该是有k8s环境变量的
-tmux attach -t dev_by10
-printenv
-```
-
-这两个容器挂在了公共存储盘，路径是/data/lzm。建议你在此路径下进行代码开发，这样可以保证两个容器里代码一致性。容器的.ssh里面配置了你的公钥和私钥。git clone时使用ssh链接，不要用https。
-
-```c
-cd /data/lzm
-git clone git@github.com:USTC-MCCLab/aiarena-backend.git
-```
-
-代码下载后，在vscode上把remote-ssh拓展安装好，配置一下。然后把go拓展安装好，然后`ctrl+shift+p`，输入go，选择go install，把显示的几个的包全选并安装。
 
 修改一下`aiarena-backend/services/gateway/script`脚本，之后要加上你自己的quota
 
