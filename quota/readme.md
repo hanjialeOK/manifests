@@ -80,7 +80,7 @@ ssh登录进容器和`kube exec`进容器的区别是，前者缺少很多环境
 
 ```c
 // gateway不要环境变量，只需进入quota模块
-kubectl exec -it k8s-quota-server-v0-7b5fd846f6-8xjfm
+kubectl exec -it k8s-quota-server-v0-7b5fd846f6-8xjfm -- /bin/zsh
 printenv > ~/.env
 // tmux可以保留环境变量，ctrl+b+d可以脱离该窗口
 tmux new -s dev_by10
