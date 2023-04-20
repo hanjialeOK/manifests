@@ -105,7 +105,21 @@ cd /data/lzm
 git clone git@github.com:USTC-MCCLab/aiarena-backend.git
 ```
 
-代码下载后，在vscode上把remote-ssh拓展安装好，配置一下。然后把go拓展安装好，然后`ctrl+shift+p`，输入go，选择go install，把显示的几个的包全选并安装。
+代码下载后，在vscode上把remote-ssh拓展安装好，配置如下。
+
+```c
+Host gateway_by10
+  HostName 192.168.4.10
+  User root
+  Port 20000
+
+Host dev_by10
+  HostName 192.168.4.10
+  User root
+  Port 20001
+```
+
+然后把go拓展安装好，然后`ctrl+shift+p`，输入go，选择go install，把显示的几个的包全选并安装。
 
 修改`aiarena-backend/.vscode/launch.json`，方便使用vscode debug。之后你应该加上quota相关内容。
 
