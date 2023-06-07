@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-ssh-quota-v0
+  name: svc-ssh-gateway-v0
 spec:
   allocateLoadBalancerNodePorts: false
   type: LoadBalancer
@@ -9,8 +9,8 @@ spec:
   externalIPs:
   - 192.168.4.10
   selector:
-    k8s-ssh-quota-server: v0
+    k8s-ssh-gateway-server: v0
   ports:
   - name: ssh
-    port: 9377
+    port: 9900
     targetPort: 22

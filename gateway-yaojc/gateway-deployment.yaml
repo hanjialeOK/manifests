@@ -12,14 +12,14 @@ spec:
     k8s-gateway-server: v0
   ports:
   - name: gateway
-    port: 10003
+    port: 9500
     targetPort: 8000
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: k8s-gateway-server-v0
-  namespace: lzm
+  namespace: yaojc
 spec:
   replicas: 1
   selector:
@@ -34,16 +34,16 @@ spec:
     spec:
       containers:
       - name: k8s-gateway-server
-        image: docker.kt.io/rlg1/lzm/going:v1
+        image: docker.kt.io/rlg1/yaojc/going:v1
         command: ["/bin/bash","-c"]
         args:
         - service ssh restart;while true;do sleep 10h;done
         volumeMounts:
-        - mountPath: /data/lzm
+        - mountPath: /data/yaojc
           name: storage
       volumes:
       - name: storage
         nfs:
           server: 169.252.198.3
-          path: /NAS_DATA/NAS_DATA/lzm
+          path: /NAS_DATA/NAS_DATA/yaojc
       nodeName: by10
