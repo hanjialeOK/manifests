@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: svc-ssh-quota-v0
+  namespace: yaojc
 spec:
   allocateLoadBalancerNodePorts: false
   type: LoadBalancer

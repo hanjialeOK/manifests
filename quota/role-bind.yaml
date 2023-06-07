@@ -4,6 +4,7 @@ metadata:
   labels:
     app: quota-service-account
   name: quota-service-account
+  namespace: hanjl
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
