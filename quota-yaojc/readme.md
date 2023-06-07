@@ -18,7 +18,7 @@ kubectl apply -f gateway-deployment.yaml
 // ssh服务，方便你可以登录该容器进行开发
 kubectl apply -f ssh-service.yaml
 // quota
-cd manifests/quota
+cd manifests/quota-yaojc
 // 赋予quota模块管理员权限
 kubectl apply -f role-bind.yaml
 // 部署quota服务
