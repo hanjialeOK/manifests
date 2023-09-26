@@ -31,7 +31,7 @@ spec:
       serviceAccountName: user-service-account
       containers:
       - name: k8s-user-server
-        image: docker.kt.io/rlg1/hanjl/going:v1
+        image: docker.kt.io/aiarena/backend:latest
         command: ["/bin/bash","-c"]
         args:
         - service ssh restart;while true;do sleep 10h;done
